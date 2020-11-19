@@ -1,7 +1,7 @@
 import requests
 import pandas
 import scipy
-import numpy as np
+import numpy
 import sys
 import pandas as pd
 
@@ -12,6 +12,8 @@ def transform(dat):
     dat = dat.T.reset_index()
     dat.columns = ['area','price']
     dat = dat.iloc[1:]
+    dat['area'] = pd.to_numeric(dat['area'], downcast='float')
+    dat['price'] = pd.to_numeric(dat['price'], downcast='float')
     return dat
 
 def get_data():
@@ -19,16 +21,22 @@ def get_data():
     TEST_DATA_URL = "https://storage.googleapis.com/kubric-hiring/linreg_test.csv"
     train = transform(pd.read_csv(TRAIN_DATA_URL))
     test = transform(pd.read_csv(TEST_DATA_URL))
-    train_x = train['area']
-    train_y = train['price']
-    test_x = test['area']
-    test_y = test['price']
+    train_x = train['area'].values
+    train_y = train['price'].values
+    test_x = test['area'].values
+    test_y = test['price'].values
     return train_x, test_x, train_y, test_y
     
 def predict_price(area) -> float:
     train_x, test_x, train_y, test_y = get_data()
     # YOUR IMPLEMENTATION HERE
-    np.polyfit(train_x,train_y,1)
+    pol = numpy.polyfit(train_x,train_y,1)
+    
+    poly = numpy.poly1d(pol)
+    print(poly)
+    preds = poly(area)
+    return preds
+
 
 
 if __name__ == "__main__":
