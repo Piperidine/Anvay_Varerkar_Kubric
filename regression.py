@@ -33,7 +33,7 @@ def predict_price(area) -> float:
     pol = numpy.polyfit(train_x,train_y,1)
     
     poly = numpy.poly1d(pol)
-    print(poly)
+    # print(poly)
     preds = poly(area)
     return preds
 
