@@ -1,23 +1,34 @@
 import requests
 import pandas
 import scipy
-import numpy
+import numpy as np
 import sys
-
+import pandas as pd
 
 TRAIN_DATA_URL = "https://storage.googleapis.com/kubric-hiring/linreg_train.csv"
 TEST_DATA_URL = "https://storage.googleapis.com/kubric-hiring/linreg_test.csv"
 
+def transform(dat):
+    dat = dat.T.reset_index()
+    dat.columns = ['area','price']
+    dat = dat.iloc[1:]
+    return dat
 
+def get_data():
+    TRAIN_DATA_URL = "https://storage.googleapis.com/kubric-hiring/linreg_train.csv"
+    TEST_DATA_URL = "https://storage.googleapis.com/kubric-hiring/linreg_test.csv"
+    train = transform(pd.read_csv(TRAIN_DATA_URL))
+    test = transform(pd.read_csv(TEST_DATA_URL))
+    train_x = train['area']
+    train_y = train['price']
+    test_x = test['area']
+    test_y = test['price']
+    return train_x, test_x, train_y, test_y
+    
 def predict_price(area) -> float:
-    """
-    This method must accept as input an array `area` (represents a list of areas sizes in sq feet) and must return the respective predicted prices (price per sq foot) using the linear regression model that you build.
-
-    You can run this program from the command line using `python3 regression.py`.
-    """
-    response = requests.get(TRAIN_DATA_URL)
+    train_x, test_x, train_y, test_y = get_data()
     # YOUR IMPLEMENTATION HERE
-    ...
+    np.polyfit(train_x,train_y,1)
 
 
 if __name__ == "__main__":
